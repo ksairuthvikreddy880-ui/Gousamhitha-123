@@ -3,7 +3,7 @@
 
 class MobileCartHandler {
     constructor() {
-        this.API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+        this.API_BASE = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
         this.init();
     }
     
@@ -376,3 +376,4 @@ if (typeof window !== 'undefined') {
 }
 
 console.log('⚡ Mobile Cart Handler loaded (SECURE MODE - using backend API)');
+

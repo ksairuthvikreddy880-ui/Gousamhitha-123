@@ -5,12 +5,12 @@ console.log('🔐 Loading secure auth handler...');
 
 // Ensure API_BASE_URL is set (config.js should have set this)
 if (!window.API_BASE_URL) {
-    window.API_BASE_URL = 'https://gousamitha-1-g42x.onrender.com/api';
+    window.API_BASE_URL = 'https://gousamhitha-123.onrender.com/api';
 }
 
 // Helper to get API base
 function getAPIBase() {
-    return window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+    return window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 }
 
 console.log('🔗 Using API:', getAPIBase());
@@ -23,7 +23,7 @@ console.log('🔗 Using API:', getAPIBase());
         if (response.status === 401) {
             const url = typeof args[0] === 'string' ? args[0] : '';
             // Only auto-logout for our backend API calls
-            if (url.includes('gousamitha-1-g42x.onrender.com') || url.includes('/api/')) {
+            if (url.includes('gousamhitha-123.onrender.com') || url.includes('/api/')) {
                 const clone = response.clone();
                 try {
                     const json = await clone.json();
@@ -481,7 +481,7 @@ async function handleGoogleCredential(response) {
     try {
         if (msgEl) { msgEl.textContent = 'Signing in with Google...'; msgEl.style.color = '#4a7c59'; }
 
-        const apiBase = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+        const apiBase = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
         const res = await fetch(`${apiBase}/auth/google`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -660,3 +660,4 @@ if (document.readyState === 'loading') {
 }
 
 console.log('✅ Auth handler loaded');
+

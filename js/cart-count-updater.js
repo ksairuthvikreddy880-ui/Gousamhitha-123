@@ -81,7 +81,7 @@
                     return 0;
                 }
                 
-                const apiBase = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+                const apiBase = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
                 console.log(`Fetching cart for user ${user.id} from ${apiBase}/cart/${user.id}`);
                 
                 const res = await fetch(`${apiBase}/cart/${user.id}`, {

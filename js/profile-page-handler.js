@@ -7,7 +7,7 @@ console.log('📄 ========================================');
 
 // Use existing API_BASE from window or define if not exists
 if (!window.API_BASE_URL) {
-    window.API_BASE_URL = 'https://gousamitha-1-g42x.onrender.com/api';
+    window.API_BASE_URL = 'https://gousamhitha-123.onrender.com/api';
 }
 
 console.log('📄 API_BASE:', window.API_BASE_URL);
@@ -254,3 +254,4 @@ if (document.readyState === 'loading') {
 }
 
 console.log('✅ Profile page handler loaded');
+

@@ -51,7 +51,7 @@ async function updateQuantity(id, change) {
         }
         
         if (change > 0) {
-            const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products/${id}`);
+            const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products/${id}`);
             const json = await res.json();
             const product = json.product;
             if (product && newQuantity > product.stock) {
@@ -219,7 +219,7 @@ async function displayOrders() {
             ordersListContainer.innerHTML = '<div class="empty-orders"><h2>Please Login</h2><p>You need to login to view your orders.</p><a href="index.html" class="btn btn-primary">Go to Home</a></div>';
             return;
         }
-        const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/orders/user/${user.id}`, {
+        const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/orders/user/${user.id}`, {
             headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || '') }
         });
         const json = await res.json();
@@ -389,7 +389,7 @@ function handleSearch() {
 
 async function showAutocomplete(query, container, searchInput) {
     try {
-        const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products?search=${encodeURIComponent(query)}`);
+        const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products?search=${encodeURIComponent(query)}`);
         const json = await res.json();
         const products = json.products || [];
         if (!products.length) { container.style.display = 'none'; return; }
@@ -420,7 +420,7 @@ async function performSearch() {
     const searchTerm = searchInput.value.trim().toLowerCase();
     if (!searchTerm) { showToast('Please enter a search term', 'error'); return; }
     try {
-        const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products?search=${encodeURIComponent(searchTerm)}`);
+        const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products?search=${encodeURIComponent(searchTerm)}`);
         const json = await res.json();
         sessionStorage.setItem('searchResults', JSON.stringify(json.products || []));
         sessionStorage.setItem('searchTerm', searchTerm);
@@ -517,6 +517,7 @@ function enterAsAdmin() {
     // Admin login is handled via Supabase auth — redirect to login page
     window.location.href = 'login.html';
 }
+
 
 
 

@@ -75,7 +75,7 @@
             
             try {
                 // Fetch all products via backend API
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products`);
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products`);
                 const json = await res.json();
                 const products = json.products || [];
                 
@@ -241,7 +241,7 @@
         // Get all available categories from database
         async getAvailableCategories() {
             try {
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products`);
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products`);
                 const json = await res.json();
                 const products = json.products || [];
                 

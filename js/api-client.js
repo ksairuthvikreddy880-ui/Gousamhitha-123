@@ -5,7 +5,7 @@
  */
 
 // Use global API_BASE_URL (set by config.js)
-const API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+const API_BASE = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -112,3 +112,4 @@ window.UsersAPI = UsersAPI;
 window.AuthAPI = AuthAPI;
 
 console.log('✅ API client loaded — all calls routed through backend');
+

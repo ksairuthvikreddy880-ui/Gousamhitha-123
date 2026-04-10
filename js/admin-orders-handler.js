@@ -5,7 +5,7 @@
 
 console.log('🔧 Loading Admin Orders Handler...');
 
-const API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+const API_BASE = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // LOAD ORDERS
@@ -270,3 +270,4 @@ window.deleteOrder = deleteOrder;
 window.viewOrderDetails = viewOrderDetails;
 
 console.log('✅ Admin Orders Handler loaded');
+

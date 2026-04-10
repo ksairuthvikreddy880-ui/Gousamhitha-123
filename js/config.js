@@ -5,7 +5,7 @@
     'use strict';
     
     // Set global API base URL
-    window.API_BASE_URL = 'https://gousamitha-1-g42x.onrender.com/api';
+    window.API_BASE_URL = 'https://gousamhitha-123.onrender.com/api';
     
     console.log('⚙️ API Config loaded:', window.API_BASE_URL);
     

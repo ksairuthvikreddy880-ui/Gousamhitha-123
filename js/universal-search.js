@@ -114,7 +114,7 @@ class UniversalSearch {
         if (!query || query.length < 2) return;
         
         try {
-            const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products?search=${encodeURIComponent(query)}`);
+            const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products?search=${encodeURIComponent(query)}`);
             const json = await res.json();
             const products = (json.data && json.data.items) || json.products || [];
             const seen = new Set();
@@ -297,3 +297,4 @@ if (document.readyState === 'loading') {
 }
 
 console.log('🔍 Universal Search script loaded');
+

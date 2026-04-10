@@ -76,7 +76,7 @@
 
             try {
                 const token = localStorage.getItem('token') || '';
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/payouts`, {
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/payouts`, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 const json = await res.json();
@@ -119,7 +119,7 @@
             if (!confirm('Mark this payout as paid?')) return;
             try {
                 const token = localStorage.getItem('token') || '';
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/payouts/${payoutId}/pay`, {
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/payouts/${payoutId}/pay`, {
                     method: 'PUT',
                     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
                 });
@@ -141,4 +141,5 @@
     <script src="js/toast.js"></script>
 </body>
 </html>
+
 

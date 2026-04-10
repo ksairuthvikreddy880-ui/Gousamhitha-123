@@ -1,4 +1,4 @@
-﻿// product-display.js — API-only version (no Supabase)
+// product-display.js � API-only version (no Supabase)
 // Replaced by js/product-display-optimized-v2.js for shop/home pages.
 // This file is kept as a fallback for any legacy pages still referencing it.
 
@@ -10,7 +10,7 @@ async function loadProducts() {
 
     // Defer to optimized version if loaded
     if (window._shopLoaderDone || window.optimizationsLoaded) {
-        console.log('⚡ Optimized product display already handled this');
+        console.log('? Optimized product display already handled this');
         return;
     }
 
@@ -20,7 +20,7 @@ async function loadProducts() {
     targetGrid.innerHTML = Array(4).fill('<div class="skeleton-card"><div class="skeleton-img skeleton-pulse"></div><div class="skeleton-line skeleton-pulse" style="width:70%;margin-top:12px;"></div><div class="skeleton-line skeleton-pulse" style="width:40%;margin-top:8px;"></div></div>').join('');
 
     try {
-        const apiBase = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+        const apiBase = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
         const category = urlParams.get('category');
         const url = category ? `${apiBase}/products?category=${encodeURIComponent(category)}` : `${apiBase}/products`;
 
@@ -30,7 +30,7 @@ async function loadProducts() {
         const products = (json.data && json.data.items) || json.products || [];
 
         if (products.length === 0) {
-            targetGrid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;"><div style="font-size:4rem;">📦</div><div style="color:#666;">No products available yet.</div></div>';
+            targetGrid.innerHTML = '<div style="text-align:center;padding:3rem;grid-column:1/-1;"><div style="font-size:4rem;">??</div><div style="color:#666;">No products available yet.</div></div>';
             return;
         }
 
@@ -42,7 +42,7 @@ async function loadProducts() {
                 <img src="${p.image_url || 'images/placeholder.jpg'}" alt="${p.name}" loading="lazy" onerror="this.src='images/placeholder.jpg'">
                 <h3 style="margin:.8rem 0 .3rem;font-size:1.1rem;color:#333;">${p.name}</h3>
                 ${unit ? `<p style="color:#666;font-size:.85rem;margin:.2rem 0;">${unit}</p>` : ''}
-                <p class="price" style="font-size:1.3rem;font-weight:700;color:#4a7c59;margin:.5rem 0;">₹${p.price}</p>
+                <p class="price" style="font-size:1.3rem;font-weight:700;color:#4a7c59;margin:.5rem 0;">?${p.price}</p>
                 ${avail
                     ? `<div style="margin:.5rem 0;"><span style="padding:.3rem .8rem;border-radius:15px;font-size:.75rem;font-weight:600;background:#e8f5e9;color:#2e7d32;">In Stock (${p.stock} left)</span></div>
                        <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;margin:1rem 0;">
@@ -58,7 +58,7 @@ async function loadProducts() {
         }).join('');
     } catch (err) {
         console.error('Error loading products:', err);
-        targetGrid.innerHTML = `<div style="text-align:center;padding:2rem;color:#d32f2f;grid-column:1/-1;"><div style="font-size:3rem;">⚠️</div><div>${err.message}</div><button onclick="location.reload()" style="margin-top:1rem;padding:.7rem 1.5rem;background:#4a7c59;color:#fff;border:none;border-radius:8px;cursor:pointer;">Retry</button></div>`;
+        targetGrid.innerHTML = `<div style="text-align:center;padding:2rem;color:#d32f2f;grid-column:1/-1;"><div style="font-size:3rem;">??</div><div>${err.message}</div><button onclick="location.reload()" style="margin-top:1rem;padding:.7rem 1.5rem;background:#4a7c59;color:#fff;border:none;border-radius:8px;cursor:pointer;">Retry</button></div>`;
     }
 }
 
@@ -82,7 +82,7 @@ async function addToCart(productId, productName, price, maxStock) {
     const qty = parseInt(document.getElementById('qty-' + productId)?.value || 1);
     try {
         const token = localStorage.getItem('token') || '';
-        const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/cart`, {
+        const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/cart`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
             body: JSON.stringify({ user_id: user.id, product_id: productId, quantity: qty })
@@ -98,7 +98,7 @@ async function addToCart(productId, productName, price, maxStock) {
     }
 }
 
-// Initialize — only if optimized version hasn't run
+// Initialize � only if optimized version hasn't run
 let _legacyInitDone = false;
 document.addEventListener('DOMContentLoaded', function() {
     if (_legacyInitDone || window._shopLoaderDone || window.optimizationsLoaded) return;
@@ -117,3 +117,4 @@ window.loadProducts = loadProducts;
 window.increaseQuantity = increaseQuantity;
 window.decreaseQuantity = decreaseQuantity;
 window.addToCart = window.addToCart || addToCart;
+

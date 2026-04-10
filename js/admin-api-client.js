@@ -7,7 +7,7 @@
 console.log('🔧 Loading Admin API Client...');
 
 // Use global API_BASE_URL from config.js
-const ADMIN_API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+const ADMIN_API_BASE = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
 console.log('🔗 Admin API Base:', ADMIN_API_BASE);
 
@@ -326,3 +326,4 @@ window.getAdminToken = getAdminToken;
 window.getAdminUser = getAdminUser;
 
 console.log('✅ Admin API Client loaded');
+

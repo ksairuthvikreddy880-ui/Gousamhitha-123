@@ -90,7 +90,7 @@ if (!window.updateProfileUI) {
         let userData = null;
         try {
             const token = localStorage.getItem('token') || '';
-            const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/users/${user.id}`, {
+            const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/users/${user.id}`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (res.ok) { const json = await res.json(); userData = json.data || json.user; }
@@ -136,3 +136,4 @@ window.addEventListener('userLoggedIn', () => { if (typeof window.updateProfileU
 window.addEventListener('userLoggedOut', () => { if (typeof window.updateProfileUI === 'function') window.updateProfileUI(); });
 
 console.log('✅ Profile handler loaded (API-only)');
+

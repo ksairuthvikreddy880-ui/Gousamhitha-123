@@ -4,7 +4,7 @@
 (function () {
     'use strict';
 
-    const API = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+    const API = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
     function getToken() {
         return localStorage.getItem('token') || localStorage.getItem('auth_token') || '';
@@ -152,3 +152,4 @@
         checkAndLoadProfile();
     }
 })();
+

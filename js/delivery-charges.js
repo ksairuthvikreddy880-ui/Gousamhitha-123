@@ -2,7 +2,7 @@
 class DeliveryChargeCalculator {
     constructor() {
         this.deliveryInfo = null;
-        this.apiBase = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+        this.apiBase = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
     }
 
     async getDeliveryCharge(pincode, orderTotal = 0) {
@@ -90,3 +90,4 @@ class DeliveryChargeCalculator {
 }
 
 window.deliveryCalculator = new DeliveryChargeCalculator();
+

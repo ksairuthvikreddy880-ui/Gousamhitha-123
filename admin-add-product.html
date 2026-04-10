@@ -180,7 +180,7 @@
             if (!vendorSelect) return;
             try {
                 const token = localStorage.getItem('token') || '';
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/vendors`, {
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/vendors`, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 const json = await res.json();
@@ -253,7 +253,7 @@
 
             try {
                 const token = localStorage.getItem('token') || '';
-                const res = await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/products`, {
+                const res = await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/products`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(newProduct)
@@ -278,7 +278,7 @@
             if (!confirm('Are you sure you want to logout?')) return;
             try {
                 const token = localStorage.getItem('token') || '';
-                await fetch(`${window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api'}/auth/signout`, {
+                await fetch(`${window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api'}/auth/signout`, {
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + token }
                 }).catch(() => {});
@@ -291,4 +291,5 @@
     <script src="js/toast.js"></script>
 </body>
 </html>
+
 

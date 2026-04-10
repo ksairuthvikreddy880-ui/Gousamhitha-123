@@ -2,7 +2,7 @@
 (function () {
     'use strict';
 
-    var API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+    var API_BASE = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
     // ── Skeleton ──────────────────────────────────────────────────────────────
     function injectSkeletonStyles() {
@@ -280,3 +280,4 @@
 
     console.log('⚡ [ProductOptimizer] Loaded — using backend API');
 })();
+
