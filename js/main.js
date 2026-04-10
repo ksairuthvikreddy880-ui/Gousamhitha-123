@@ -3,8 +3,12 @@
  * Minimal imports to get started
  */
 
-// Set API base URL first
-window.API_BASE_URL = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
+// Set API base URL — config.js should have already set this via window.API_BASE_URL
+if (!window.API_BASE_URL) {
+    window.API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:4000/api'
+        : 'https://gousamhitha-123.onrender.com/api';
+}
 
 // Don't import CSS here - let HTML link tags handle it for now
 // We can add CSS imports later once JS is working
