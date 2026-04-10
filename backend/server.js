@@ -49,6 +49,10 @@ app.use('/api/delivery', deliveryRoutes);
 app.use('/api/payouts', payoutRoutes);
 
 // ── Health Check ──────────────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.json({ success: true, message: 'Gousamhitha API Server is running' });
+});
+
 app.get('/api/health', (req, res) => {
     res.json({
         success: true,
