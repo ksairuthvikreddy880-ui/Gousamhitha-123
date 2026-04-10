@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Orders - Gousamhitha Admin</title>
+    <link rel="stylesheet" href="admin-styles-professional.css">
+    <link rel="stylesheet" href="order-tracking-professional.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/admin-responsive.css">
+    <link rel="stylesheet" href="css/admin-scrolling-fix.css">
+    <link rel="stylesheet" href="css/admin-mobile-alignment-fix.css">
+    <link rel="stylesheet" href="css/admin-mobile-fix.css">
+    <link rel="stylesheet" href="css/admin-emergency-fix.css">
+    <link rel="stylesheet" href="css/edit-modal-fix.css">
+    <link rel="stylesheet" href="css/admin-mobile-layout-fix.css">
+    <link rel="stylesheet" href="css/mobile-table-fullwidth-fix.css">
+    <script src="js/admin-mobile.js"></script>
+    <script src="js/admin-mobile-table-fix.js"></script>
+    <script src="js/admin-mobile-layout-fix.js"></script>
+    <script src="js/single-click-hamburger-fix.js"></script>
+    <style>
+        .order-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s;
+        }
+        
+        .order-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .order-id {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+        
+        .order-date {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        .order-details {
+            margin-bottom: 16px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .detail-row .label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .detail-row .value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .order-status {
+            margin: 16px 0;
+        }
+        
+        .order-status label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .status-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn-view {
+            flex: 1;
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-view:hover {
+            background: #1976D2;
+        }
+        
+        .btn-delete {
+            flex: 1;
+            padding: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            .order-card {
+                padding: 16px;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .order-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Gousamhitha Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="admin-products.html" class="nav-link">Products</a>
+                <a href="admin-add-product.html" class="nav-link">Add Product</a>
+                <a href="admin-vendors.html" class="nav-link">Vendors</a>
+                <a href="admin-orders.html" class="nav-link active">Orders</a>
+                <a href="admin-deliveries.html" class="nav-link">Deliveries</a>
+                <a href="admin-delivery-settings.html" class="nav-link">Delivery Settings</a>
+                <a href="admin-payouts.html" class="nav-link">Vendor Payouts</a>
+                <a href="#" class="nav-link" onclick="adminLogout()">Logout</a>
+            </nav>
+        </aside>
+        
+        <main class="admin-content">
+            <div class="content-header">
+                <h1>Orders Management</h1>
+                <p style="color: #666; font-size: 14px; margin-top: 8px;">Manage customer orders and track deliveries</p>
+            </div>
+            
+            <div id="orders-container" style="max-width: 1400px;">
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <p>Loading orders...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/loading-fix-enhanced.js"></script>
+    <script src="js/page-loader.js"></script>
+    <script src="js/admin-api-client.js"></script>
+    <script src="js/admin-orders-handler.js"></script>
+    <script src="js/toast.js"></script>
+    
+    <script>
+        // Admin logout function
+        function adminLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('auth_user');
+            window.location.href = 'index.html';
+        }
+        
+        window.adminLogout = adminLogout;
+    </script>
+</body>
+</html>

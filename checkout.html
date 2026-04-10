@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Checkout - Gousamhitha</title>
+    <!-- Version: 3.0 - Fixed product_id in order_items -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/back-button.css">
+    <link rel="stylesheet" href="css/real-search-styles.css">
+    <link rel="stylesheet" href="css/universal-search-fix.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="js/back-button.js"></script>
+    <script src="js/real-product-search.js"></script>
+    <script src="js/universal-search.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    
+    <div class="top-strip">
+        <div class="container">
+            <p>Next day delivery available for select products | Minimum order applies</p>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                
+                <div class="logo-section">
+                    <div class="logo">Gousamhitha</div>
+                    <div class="logo-subtitle">Organic Products Store</div>
+                </div>
+
+                <div class="search-section">
+                    <input type="text" placeholder="Search for organic products..." class="main-search-bar">
+                    <button class="search-btn">Search</button>
+                </div>
+
+                <div class="nav-items">
+                    
+                    <a href="#" class="nav-item profile-icon-btn" id="profile-btn" onclick="openAuthModal()">
+                        <div class="profile-icon-placeholder">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                                <path d="M6.5 18.5C7.5 16.5 9.5 15 12 15C14.5 15 16.5 16.5 17.5 18.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <button class="hamburger-menu" id="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    <div class="hamburger-dropdown" id="hamburger-dropdown">
+                        <a href="#" class="hamburger-item">
+                            <img src="https://img.icons8.com/fluency/48/star--v1.png" alt="New" class="hamburger-icon-img">
+                            <span>New To Gousamhitha</span>
+                        </a>
+                        <a href="#" class="hamburger-item">
+                            <img src="https://img.icons8.com/fluency/48/crown.png" alt="Club" class="hamburger-icon-img">
+                            <span>Club</span>
+                        </a>
+                        <a href="orders.html" class="hamburger-item">
+                            <img src="https://img.icons8.com/fluency/48/package.png" alt="Orders" class="hamburger-icon-img">
+                            <span>My Orders</span>
+                        </a>
+                        <a href="cart.html" class="hamburger-item">
+                            <img src="https://img.icons8.com/fluency/48/shopping-cart.png" alt="Cart" class="hamburger-icon-img">
+                            <span>Cart (<span class="cart-count">0</span>)</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-dropdown" id="profile-dropdown">
+        <a href="#" onclick="showProfile()">My Profile</a>
+        <a href="orders.html">Orders</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-modal-content">
+            <span class="auth-close" onclick="closeAuthModal()">&times;</span>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('signin')">Sign In</button>
+                <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <div class="auth-form-container active" id="signin-form">
+                <h2>Welcome Back</h2>
+                <form onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label>Email or Mobile</label>
+                        <input type="text" id="signin-email" required placeholder="Enter email or mobile">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signin-password" required placeholder="Enter password">
+                    </div>
+                    <div class="auth-message" id="signin-message"></div>
+                    <button type="submit" class="btn btn-primary auth-submit">Sign In</button>
+                </form>
+            </div>
+
+            <div class="auth-form-container" id="signup-form">
+                <h2>Create Account</h2>
+                <form onsubmit="handleSignUp(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signup-name" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signup-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="signup-mobile" required placeholder="Enter mobile number">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password" required placeholder="Create password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="signup-confirm" required placeholder="Confirm password">
+                    </div>
+                    <div class="auth-message" id="signup-message"></div>
+                    <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="secondary-nav">
+        <div class="container">
+            <div class="secondary-nav-links">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1>Checkout</h1>
+    </div>
+
+    <section class="checkout-container">
+        <div class="container">
+            <div class="checkout-grid">
+                <div class="checkout-form">
+                    <h2>Delivery Information</h2>
+                    <form id="checkout-form">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">Delivery Address *</label>
+                            <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                                <textarea id="address" name="address" rows="4" required style="flex: 1;"></textarea>
+                                <button type="button" onclick="openMapSelector()" class="btn-map-select" style="padding: 0.8rem 1rem; background: #4a7c59; color: white; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; height: fit-content;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    Select on Map
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pincode">Pincode *</label>
+                            <input type="text" id="pincode" name="pincode" required maxlength="6" pattern="[0-9]{6}">
+                            <small style="color: #d32f2f; font-size: 12px; font-weight: 600;">⚠️ If using map selection, please verify the pincode is correct for your exact location</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Order Notes (Optional)</label>
+                            <textarea id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary sticky-bottom" style="width: 100%; background: #4a7c59 !important; color: white !important;" onclick="handleCheckoutSubmit(event)">Place Order</button>
+                    </form>
+                </div>
+                
+                <div class="order-summary">
+                    <h2>Order Summary</h2>
+                    <div id="checkout-summary">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Our Store</h3>
+                    <p>We provide 100% organic products sourced from traditional farms, ensuring purity and quality in every product.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>Phone: +91 9908003289</p>
+                    <p>Email: info@gousamhitha.com</p>
+                    <p>Address: Plot no 118, Kavuri Hills Phase 1, Madhapur, Hyderabad</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Gousamhitha. All rights reserved. | <a href="privacy-policy.html" style="color:#a5d6a7;">Privacy Policy</a> | <a href="terms.html" style="color:#a5d6a7;">Terms &amp; Conditions</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="auth-modal" id="admin-modal">
+        <div class="auth-modal-content">
+            <span class="auth-close" onclick="closeAdminModal()">&times;</span>
+            
+            <div class="admin-modal-header">
+                <h2>Admin Login</h2>
+                <p>Access the admin dashboard</p>
+            </div>
+
+            <form onsubmit="handleAdminLoginModal(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="admin-modal-email" required placeholder="admin@gousamhitha.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="admin-modal-password" required placeholder="Enter password">
+                </div>
+                <div class="auth-message" id="admin-modal-message"></div>
+                <button type="submit" class="btn btn-primary auth-submit">Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="map-modal" class="map-modal">
+        <div class="map-modal-content">
+            <div class="map-modal-header">
+                <h3>Select Delivery Location</h3>
+                <button type="button" onclick="closeMapSelector()" class="map-close-btn">&times;</button>
+            </div>
+            <div class="map-search-container">
+                <input type="text" id="map-search" placeholder="Search for a location..." class="map-search-input">
+            </div>
+            <div id="map-container" class="map-container"></div>
+            <div class="map-modal-footer">
+                <div id="selected-address-preview" class="selected-address-preview">
+                    <small>Drag the map or tap to select your location</small>
+                </div>
+                <button type="button" onclick="confirmLocation()" class="btn-confirm-location">Confirm Location</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Optimization System V2 -->
+    <script src="js/performance-master-v2.js"></script>
+    
+    <script src="js/auth-handler.js"></script>
+    <script src="js/profile-handler.js?v=8"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/mobile-menu.js?v=2"></script>
+    <script src="js/delivery-charges.js"></script>
+    <script src="js/payment-calculator.js?v=4"></script>
+    <script src="js/payment-total-fix.js?v=3"></script>
+    <script src="payment.js?v=19"></script>
+    
+    <!-- EMERGENCY: Inline openCheckoutPayment function -->
+    <script>
+        // Ensure openCheckoutPayment is available as fallback
+        if (typeof openCheckoutPayment === 'undefined') {
+            window.openCheckoutPayment = function(orderData) {
+                const confirmed = confirm(
+                    `Order Total: ₹${(orderData.total || 0).toFixed(2)}\n\nClick OK to place order with Cash on Delivery`
+                );
+                if (confirmed && window.saveOrderToDatabase) {
+                    window.saveOrderToDatabase(orderData, 'COD', 'pending')
+                        .catch(err => alert('Error: ' + err.message));
+                }
+            };
+        }
+    </script>
+    <script>
+        let map, marker, selectedLat, selectedLng, selectedDeliveryAddress;
+        let currentDeliveryCharge = 0;
+        let cartSubtotal = 0;
+        let checkoutCartItems = [];
+
+        const API_BASE = window.API_BASE_URL || 'https://gousamitha-1-g42x.onrender.com/api';
+
+        // ── Map selector functions ──────────────────────────────────────────
+        function openMapSelector() {
+            const modal = document.getElementById('map-modal');
+            if (!modal) return;
+            modal.classList.add('active');
+
+            setTimeout(() => {
+                if (!map) {
+                    // Default to India center
+                    map = L.map('map-container').setView([20.5937, 78.9629], 5);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    marker = L.marker([20.5937, 78.9629], { draggable: true }).addTo(map);
+
+                    marker.on('dragend', function() {
+                        const pos = marker.getLatLng();
+                        selectedLat = pos.lat;
+                        selectedLng = pos.lng;
+                        reverseGeocode(pos.lat, pos.lng);
+                    });
+
+                    map.on('click', function(e) {
+                        marker.setLatLng(e.latlng);
+                        selectedLat = e.latlng.lat;
+                        selectedLng = e.latlng.lng;
+                        reverseGeocode(e.latlng.lat, e.latlng.lng);
+                    });
+
+                    // Try to use current location
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(pos => {
+                            const lat = pos.coords.latitude;
+                            const lng = pos.coords.longitude;
+                            map.setView([lat, lng], 15);
+                            marker.setLatLng([lat, lng]);
+                            selectedLat = lat;
+                            selectedLng = lng;
+                            reverseGeocode(lat, lng);
+                        }, () => {});
+                    }
+                } else {
+                    map.invalidateSize();
+                }
+            }, 300);
+        }
+
+        function closeMapSelector() {
+            const modal = document.getElementById('map-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function reverseGeocode(lat, lng) {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+                const data = await res.json();
+                const preview = document.getElementById('selected-address-preview');
+                if (preview && data.display_name) {
+                    preview.innerHTML = `<small>${data.display_name}</small>`;
+                    selectedDeliveryAddress = data.display_name;
+
+                    // Auto-fill pincode if found
+                    const pincode = data.address && (data.address.postcode || '');
+                    if (pincode && /^[0-9]{6}$/.test(pincode)) {
+                        document.getElementById('pincode').value = pincode;
+                    }
+                }
+            } catch (e) { /* silent fail */ }
+        }
+
+        function confirmLocation() {
+            if (!selectedLat || !selectedLng) {
+                alert('Please select a location on the map first');
+                return;
+            }
+            if (selectedDeliveryAddress) {
+                document.getElementById('address').value = selectedDeliveryAddress;
+            }
+            closeMapSelector();
+            // Trigger delivery charge update
+            const pincode = document.getElementById('pincode').value.trim();
+            if (pincode.length === 6) updateDeliveryCharge();
+        }
+
+        // Map search
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapSearch = document.getElementById('map-search');
+            if (mapSearch) {
+                let searchTimeout;
+                mapSearch.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(async () => {
+                        const q = this.value.trim();
+                        if (q.length < 3 || !map) return;
+                        try {
+                            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`);
+                            const results = await res.json();
+                            if (results.length) {
+                                const { lat, lon, display_name } = results[0];
+                                map.setView([lat, lon], 15);
+                                marker.setLatLng([lat, lon]);
+                                selectedLat = parseFloat(lat);
+                                selectedLng = parseFloat(lon);
+                                selectedDeliveryAddress = display_name;
+                                document.getElementById('selected-address-preview').innerHTML = `<small>${display_name}</small>`;
+                            }
+                        } catch (e) { /* silent */ }
+                    }, 600);
+                });
+            }
+        });
+
+        // ── Load cart from backend API ──────────────────────────────────────
+        async function loadCheckoutSummary() {
+            const summaryDiv = document.getElementById('checkout-summary');
+            summaryDiv.innerHTML = '<p>Loading...</p>';
+
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+
+            if (!userStr || !token) {
+                summaryDiv.innerHTML = '<p>Please login to checkout</p>';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+
+            try {
+                const res = await fetch(`${API_BASE}/cart/${user.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const json = await res.json();
+                const items = (json.data && json.data.items) ? json.data.items : [];
+
+                if (!items.length) {
+                    summaryDiv.innerHTML = '<p>Your cart is empty. <a href="shop.html">Go shopping</a></p>';
+                    return;
+                }
+
+                checkoutCartItems = items;
+                cartSubtotal = items.reduce((sum, item) => {
+                    const price = item.products ? item.products.price : 0;
+                    return sum + price * item.quantity;
+                }, 0);
+                window.cartSubtotal = cartSubtotal;
+
+                let html = '<div class="summary-items">';
+                items.forEach(item => {
+                    const p = item.products || {};
+                    html += `
+                        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;">
+                            <div>
+                                <div style="font-weight:500;">${p.name || 'Product'}</div>
+                                <div style="font-size:13px;color:#666;">Qty: ${item.quantity} × ₹${p.price || 0}</div>
+                            </div>
+                            <div style="font-weight:600;">₹${((p.price || 0) * item.quantity).toFixed(2)}</div>
+                        </div>`;
+                });
+                html += '</div>';
+                html += `
+                    <div style="margin-top:20px;padding-top:15px;border-top:2px solid #eee;">
+                        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">₹${cartSubtotal.toFixed(2)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                            <span>Delivery Charge</span>
+                            <span id="delivery-charge" style="color:#4caf50;font-weight:600;">Enter pincode</span>
+                        </div>
+                        <div id="delivery-info-box"></div>
+                        <div style="display:flex;justify-content:space-between;padding:15px 0;border-top:2px solid #333;margin-top:10px;font-size:18px;font-weight:700;">
+                            <span>Total</span>
+                            <span id="order-total" style="color:#4a7c59;">₹${cartSubtotal.toFixed(2)}</span>
+                        </div>
+                    </div>`;
+                summaryDiv.innerHTML = html;
+
+                // Pre-fill user info
+                try {
+                    const uRes = await fetch(`${API_BASE}/users/${user.id}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (uRes.ok) {
+                        const uJson = await uRes.json();
+                        const u = uJson.data || uJson.user || {};
+                        const fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim();
+                        if (fullName) document.getElementById('name').value = fullName;
+                        if (u.phone) document.getElementById('phone').value = u.phone;
+                        if (u.email || user.email) document.getElementById('email').value = u.email || user.email;
+                        if (u.address) document.getElementById('address').value = u.address;
+                        if (u.city) document.getElementById('city').value = u.city;
+                        if (u.pincode) {
+                            document.getElementById('pincode').value = u.pincode;
+                            updateDeliveryCharge();
+                        }
+                    }
+                } catch (e) { /* prefill is optional */ }
+
+            } catch (err) {
+                console.error('Checkout load error:', err);
+                summaryDiv.innerHTML = '<p>Error loading cart. Please refresh.</p>';
+            }
+        }
+
+        // ── Delivery charge update ──────────────────────────────────────────
+        async function updateDeliveryCharge() {
+            const pincode = document.getElementById('pincode').value.trim();
+            if (pincode.length === 6 && window.deliveryCalculator) {
+                const info = await window.deliveryCalculator.updateCheckoutDelivery(pincode, cartSubtotal);
+                currentDeliveryCharge = info.charge;
+                window.currentDeliveryCharge = currentDeliveryCharge;
+            }
+        }
+
+        // ── Place Order handler ─────────────────────────────────────────────
+        async function handleCheckoutSubmit(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+
+            if (!userStr || !token) {
+                alert('Please login to place an order');
+                return false;
+            }
+            const user = JSON.parse(userStr);
+
+            if (!checkoutCartItems.length) {
+                alert('Your cart is empty!');
+                window.location.href = 'shop.html';
+                return false;
+            }
+
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const pincode = document.getElementById('pincode').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name || !phone || !address || !city || !pincode) {
+                alert('Please fill in all required fields');
+                return false;
+            }
+
+            const subtotal = checkoutCartItems.reduce((sum, item) => {
+                const price = item.products ? item.products.price : 0;
+                return sum + price * item.quantity;
+            }, 0);
+            const deliveryCharge = currentDeliveryCharge || 0;
+            const total = subtotal + deliveryCharge;
+
+            const orderData = {
+                user_id: user.id,
+                customer_name: name,
+                customerName: name,
+                email: email || user.email,
+                phone,
+                address,
+                city,
+                pincode,
+                notes,
+                subtotal,
+                delivery_charge: deliveryCharge,
+                total,
+                payment_method: 'COD',
+                items: checkoutCartItems.map(item => ({
+                    product_id: item.product_id,
+                    product_name: item.products ? item.products.name : 'Product',
+                    price: item.products ? item.products.price : 0,
+                    quantity: item.quantity
+                }))
+            };
+
+            // Open payment modal if available, otherwise place directly
+            if (typeof openCheckoutPayment === 'function') {
+                openCheckoutPayment(orderData);
+            } else {
+                await placeOrderViaAPI(orderData, token);
+            }
+            return false;
+        }
+
+        // ── Place order via backend API ─────────────────────────────────────
+        window.placeOrderViaAPI = async function(orderData, token) {
+            token = token || localStorage.getItem('token') || localStorage.getItem('auth_token');
+            try {
+                const res = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.message || 'Failed to place order');
+
+                if (typeof showToast === 'function') showToast('Order placed successfully!', 'success');
+                else alert('Order placed successfully!');
+
+                setTimeout(() => { window.location.href = 'orders.html'; }, 1500);
+                return json.data;
+            } catch (err) {
+                console.error('Order placement error:', err);
+                if (typeof showToast === 'function') showToast(err.message, 'error');
+                else alert('Error: ' + err.message);
+                throw err;
+            }
+        };
+
+        // ── Also expose saveOrderToDatabase as alias for payment.js ────────
+        window.saveOrderToDatabase = async function(orderData, paymentMethod, paymentStatus) {
+            const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+            const userStr = localStorage.getItem('user');
+            const user = userStr ? JSON.parse(userStr) : null;
+
+            // Normalize payment method to what backend expects
+            const methodMap = {
+                'Cash on Delivery': 'COD', 'cash on delivery': 'COD',
+                'cod': 'COD', 'COD': 'COD',
+                'UPI': 'UPI', 'upi': 'UPI',
+                'Card': 'Card', 'card': 'Card',
+                'NetBanking': 'NetBanking'
+            };
+            const normalizedMethod = methodMap[paymentMethod] || 'COD';
+
+            // Normalize phone - strip non-digits, take last 10
+            const rawPhone = String(orderData.phone || '').replace(/\D/g, '');
+            const phone = rawPhone.length >= 10 ? rawPhone.slice(-10) : rawPhone;
+
+            const payload = {
+                user_id: orderData.user_id || (user && user.id),
+                customer_name: orderData.customerName || orderData.customer_name || 'Customer',
+                email: orderData.email || (user && user.email),
+                phone: phone,
+                address: orderData.address,
+                city: orderData.city,
+                pincode: orderData.pincode,
+                notes: orderData.notes || null,
+                subtotal: orderData.subtotal,
+                delivery_charge: orderData.delivery_charge || 0,
+                total: orderData.finalTotal || orderData.total,
+                payment_method: normalizedMethod,
+                items: (orderData.items || []).map(item => ({
+                    product_id: item.product_id,
+                    product_name: item.product_name || item.name || 'Product',
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            };
+
+            return window.placeOrderViaAPI(payload, token);
+        };
+
+        // ── DOMContentLoaded ────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutSummary();
+
+            const pincodeInput = document.getElementById('pincode');
+            if (pincodeInput) {
+                pincodeInput.addEventListener('blur', updateDeliveryCharge);
+                pincodeInput.addEventListener('input', function() {
+                    if (this.value.length === 6) updateDeliveryCharge();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

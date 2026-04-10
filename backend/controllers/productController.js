@@ -1,0 +1,186 @@
+const supabase = require('../config/supabase');
+const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { successResponse, createdResponse, errorResponse, batchResponse } = require('../utils/response');
+
+// GET /api/products
+const getProducts = asyncHandler(async (req, res) => {
+    const { category, search, page = 1, limit = 20, sort = 'created_at' } = req.query;
+
+    let query = supabase
+        .from('products')
+        .select('id, name, category, subcategory, price, stock, unit, unit_quantity, display_unit, image_url, in_stock, created_at, updated_at');
+
+    // Apply filters
+    if (category !== undefined && category !== '') {
+        query = query.eq('category', category);
+    }
+    if (search !== undefined && search !== '') {
+        query = query.ilike('name', `%${search}%`);
+    }
+
+    // Get total count
+    let countQuery = supabase.from('products').select('id', { count: 'exact', head: true });
+    if (category !== undefined && category !== '') {
+        countQuery = countQuery.eq('category', category);
+    }
+    if (search !== undefined && search !== '') {
+        countQuery = countQuery.ilike('name', `%${search}%`);
+    }
+    const { count } = await countQuery;
+
+    // Apply pagination and sorting
+    const offset = (page - 1) * limit;
+    query = query.order(sort, { ascending: sort === 'name' });
+    const { data, error } = await query.range(offset, offset + limit - 1);
+
+    if (error) {
+        console.error('Products query error:', error);
+        throw new AppError('Failed to fetch products', 500);
+    }
+
+    // Return products with image_url as-is (base64 or URL)
+    const productsWithImages = (data || []).map(product => ({
+        ...product,
+        image_url: product.image_url || null
+    }));
+
+    console.log('Products fetched:', productsWithImages ? productsWithImages.length : 0);
+
+    return batchResponse(res, 200, productsWithImages, count || 0, 'Products fetched successfully');
+});
+
+// GET /api/products/:id
+const getProductById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error || !data) {
+        throw new AppError('Product not found', 404);
+    }
+
+    return successResponse(res, 200, data, 'Product retrieved successfully');
+});
+
+// POST /api/products  (admin only)
+const createProduct = asyncHandler(async (req, res) => {
+    const { name, category, price, stock, image_url, unit, unit_quantity, display_unit } = req.body;
+
+    // Validate business logic
+    if (price <= 0) {
+        throw new AppError('Price must be greater than 0', 400);
+    }
+    if (stock < 0) {
+        throw new AppError('Stock cannot be negative', 400);
+    }
+
+    const { data, error } = await supabase
+        .from('products')
+        .insert({
+            name,
+            category,
+            price,
+            stock,
+            image_url,
+            unit,
+            unit_quantity,
+            display_unit,
+            in_stock: stock > 0
+        })
+        .select()
+        .single();
+
+    if (error) {
+        if (error.code === '23505') {
+            throw new AppError('A product with this name already exists', 409);
+        }
+        throw new AppError('Failed to create product', 500);
+    }
+
+    return createdResponse(res, data, 'Product created successfully');
+});
+
+// PUT /api/products/:id  (admin only)
+const updateProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    console.log('🔍 UPDATE PRODUCT - START');
+    console.log('📋 Product ID:', id);
+    console.log('📦 Request Body:', JSON.stringify(req.body, null, 2));
+    console.log('👤 User:', req.user);
+
+    // Prevent overwriting id
+    delete updates.id;
+    
+    // CRITICAL: Remove in_stock - it's a generated column in the database
+    delete updates.in_stock;
+
+    console.log('✅ After removing id and in_stock:', JSON.stringify(updates, null, 2));
+
+    // Validate business logic
+    if (updates.price !== undefined && updates.price <= 0) {
+        console.log('❌ Validation failed: Price must be greater than 0');
+        throw new AppError('Price must be greater than 0', 400);
+    }
+    if (updates.stock !== undefined && updates.stock < 0) {
+        console.log('❌ Validation failed: Stock cannot be negative');
+        throw new AppError('Stock cannot be negative', 400);
+    }
+
+    console.log('📤 Final updates to send to DB:', JSON.stringify(updates, null, 2));
+
+    const { data, error } = await supabase
+        .from('products')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('❌ SUPABASE UPDATE ERROR:', JSON.stringify(error, null, 2));
+        console.error('❌ Error code:', error.code);
+        console.error('❌ Error message:', error.message);
+        console.error('❌ Error details:', error.details);
+        console.error('❌ Error hint:', error.hint);
+        
+        if (error.code === 'PGRST116') {
+            throw new AppError('Product not found', 404);
+        }
+        throw new AppError('Failed to update product', 500);
+    }
+
+    console.log('✅ UPDATE SUCCESS:', JSON.stringify(data, null, 2));
+
+    return successResponse(res, 200, data, 'Product updated successfully');
+});
+
+// DELETE /api/products/:id  (admin only)
+const deleteProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // Check if product exists
+    const { data: product } = await supabase
+        .from('products')
+        .select('id')
+        .eq('id', id)
+        .single();
+
+    if (!product) {
+        throw new AppError('Product not found', 404);
+    }
+
+    const { error } = await supabase.from('products').delete().eq('id', id);
+
+    if (error) {
+        throw new AppError('Failed to delete product', 500);
+    }
+
+    return successResponse(res, 200, null, 'Product deleted successfully');
+});
+
+module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
