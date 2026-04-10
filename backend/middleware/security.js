@@ -98,9 +98,12 @@ const corsOptions = {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            console.log(`⚠️ CORS request from origin: ${origin}`);
-            // In development, allow all origins
-            if (process.env.NODE_ENV !== 'production') {
+            // Allow all Vercel deployments and any configured frontend
+            const isVercel = origin.endsWith('.vercel.app');
+            const isRender = origin.endsWith('.onrender.com');
+            if (isVercel || isRender) {
+                callback(null, true);
+            } else if (process.env.NODE_ENV !== 'production') {
                 callback(null, true);
             } else {
                 console.log(`❌ CORS blocked origin: ${origin}`);
