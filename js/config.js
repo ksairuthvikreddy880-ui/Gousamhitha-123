@@ -16,4 +16,11 @@
         return window.API_BASE_URL;
     };
 
+    // Wake up Render backend immediately on page load (free tier cold start fix)
+    if (!isLocal) {
+        fetch('https://gousamhitha-123.onrender.com/api/health', { method: 'GET' })
+            .then(function() { console.log('✅ Backend is awake'); })
+            .catch(function() { console.log('⏳ Backend waking up...'); });
+    }
+
 })();

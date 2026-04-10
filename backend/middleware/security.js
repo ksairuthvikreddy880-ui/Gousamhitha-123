@@ -82,8 +82,11 @@ const sanitizeInput = (req, res, next) => {
 // CORS configuration
 const corsOptions = {
     origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, curl)
+        if (!origin) return callback(null, true);
+
         const allowedOrigins = [
-            process.env.FRONTEND_URL,
+            // Local development
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'http://localhost:5173',
@@ -91,24 +94,25 @@ const corsOptions = {
             'http://localhost:5500',
             'http://127.0.0.1:5500',
             'http://localhost:8080',
-            'http://127.0.0.1:8080'
+            // Custom domains
+            'https://gousamhitha.com',
+            'https://www.gousamhitha.com',
+            'https://gouaadhar.com',
+            'https://www.gouaadhar.com',
+            // Dynamic frontend URL from env
+            process.env.FRONTEND_URL
         ].filter(Boolean);
 
-        // Allow requests with no origin (mobile apps, Postman, etc.) or from allowed origins
-        if (!origin || allowedOrigins.includes(origin)) {
+        const isAllowed =
+            allowedOrigins.includes(origin) ||
+            origin.endsWith('.vercel.app') ||
+            origin.endsWith('.onrender.com');
+
+        if (isAllowed) {
             callback(null, true);
         } else {
-            // Allow all Vercel deployments and any configured frontend
-            const isVercel = origin.endsWith('.vercel.app');
-            const isRender = origin.endsWith('.onrender.com');
-            if (isVercel || isRender) {
-                callback(null, true);
-            } else if (process.env.NODE_ENV !== 'production') {
-                callback(null, true);
-            } else {
-                console.log(`❌ CORS blocked origin: ${origin}`);
-                callback(new Error('Not allowed by CORS'));
-            }
+            console.log('❌ CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,

@@ -36,37 +36,29 @@
     // ── Fetch via backend API ─────────────────────────────────────────────────
     async function fetchProducts(params) {
         var qs = params ? '?' + new URLSearchParams(params).toString() : '';
-        var controller = new AbortController();
-        var timeout = setTimeout(function () { controller.abort(); }, 15000); // Increased to 15 seconds
-
-        try {
-            console.log('[ProductOptimizer] Fetching from:', API_BASE + '/products' + qs);
-            var res = await fetch(API_BASE + '/products' + qs, { 
-                signal: controller.signal,
-                headers: {
-                    'Content-Type': 'application/json'
+        var maxRetries = 3;
+        for (var attempt = 1; attempt <= maxRetries; attempt++) {
+            var controller = new AbortController();
+            var timeout = setTimeout(function () { controller.abort(); }, 60000);
+            try {
+                console.log('[ProductOptimizer] Fetching (attempt ' + attempt + '):', API_BASE + '/products' + qs);
+                var res = await fetch(API_BASE + '/products' + qs, {
+                    signal: controller.signal,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                clearTimeout(timeout);
+                if (!res.ok) throw new Error('Server error ' + res.status);
+                var json = await res.json();
+                return (json.data && json.data.items) || json.products || [];
+            } catch (err) {
+                clearTimeout(timeout);
+                console.warn('[ProductOptimizer] Attempt ' + attempt + ' failed:', err.message);
+                if (attempt >= maxRetries) {
+                    if (err.name === 'AbortError') throw new Error('Backend is waking up — please wait and retry');
+                    throw err;
                 }
-            });
-            clearTimeout(timeout);
-            
-            console.log('[ProductOptimizer] Response status:', res.status);
-            
-            if (!res.ok) {
-                var errorText = await res.text();
-                console.error('[ProductOptimizer] Error response:', errorText);
-                throw new Error('Server error ' + res.status);
+                await new Promise(function(r) { setTimeout(r, 3000); });
             }
-            
-            var json = await res.json();
-            console.log('[ProductOptimizer] Response data:', json);
-            
-            // Handle nested response structure: data.items contains the products array
-            return (json.data && json.data.items) || json.products || [];
-        } catch (err) {
-            clearTimeout(timeout);
-            console.error('[ProductOptimizer] Fetch error:', err);
-            if (err.name === 'AbortError') throw new Error('Request timed out — please refresh');
-            throw err;
         }
     }
 
@@ -146,10 +138,11 @@
 
         } catch (err) {
             console.error('❌ [ProductOptimizer]', err.message);
+            var isWaking = err.message.includes('waking') || err.message.includes('fetch');
             grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#d32f2f;grid-column:1/-1;">' +
-                '<div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>' +
-                '<div style="font-size:1.2rem;margin-bottom:.5rem;">Could not load products. Please refresh.</div>' +
-                '<div style="font-size:.85rem;color:#888;margin-bottom:1rem;">' + err.message + '</div>' +
+                '<div style="font-size:3rem;margin-bottom:1rem;">' + (isWaking ? '⏳' : '⚠️') + '</div>' +
+                '<div style="font-size:1.2rem;margin-bottom:.5rem;">' + (isWaking ? 'Server is starting up, please wait...' : 'Could not load products.') + '</div>' +
+                '<div style="font-size:.85rem;color:#888;margin-bottom:1rem;">' + (isWaking ? 'Free server takes ~30 seconds to wake up. Click Retry.' : err.message) + '</div>' +
                 '<button onclick="window.ProductOptimizer.refresh()" style="padding:.7rem 1.5rem;background:#4a7c59;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Retry</button></div>';
         } finally {
             if (typeof window.hideLoader === 'function') window.hideLoader();
