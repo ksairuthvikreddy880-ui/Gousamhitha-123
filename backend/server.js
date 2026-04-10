@@ -1,4 +1,13 @@
 require('dotenv').config();
+
+// ── Catch uncaught errors so server never silently dies ───────────────────────
+process.on('uncaughtException', (err) => {
+    console.error('❌ Uncaught Exception:', err.message, err.stack);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('❌ Unhandled Rejection:', reason);
+});
+
 const express = require('express');
 const cors = require('cors');
 
@@ -20,14 +29,14 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // ── Security Middleware ───────────────────────────────────────────────────────
-app.use(helmetConfig); // Security headers
-app.use(cors(corsOptions)); // CORS configuration - MUST BE EARLY
+app.use(helmetConfig);
+app.use(cors(corsOptions));
 
 // ── Body Parsing & Sanitization ───────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(xssProtection); // XSS protection
-app.use(sanitizeInput); // Sanitize all inputs
+app.use(xssProtection);
+app.use(sanitizeInput);
 
 // ── Request Logging ───────────────────────────────────────────────────────────
 app.use((req, res, next) => {
@@ -36,9 +45,24 @@ app.use((req, res, next) => {
 });
 
 // ── Rate Limiting ─────────────────────────────────────────────────────────────
-app.use('/api/', apiLimiter); // Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
 
-// ── Routes ────────────────────────────────────────────────────────────────────
+// ── Root & Health Routes ──────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+    res.status(200).json({ success: true, message: 'Gousamhitha API is running 🚀' });
+});
+
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        success: true,
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        env: process.env.NODE_ENV || 'development'
+    });
+});
+
+// ── API Routes ────────────────────────────────────────────────────────────────
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
@@ -48,35 +72,18 @@ app.use('/api/vendors', vendorRoutes);
 app.use('/api/delivery', deliveryRoutes);
 app.use('/api/payouts', payoutRoutes);
 
-// ── Health Check ──────────────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-    res.json({ success: true, message: 'Gousamhitha API Server is running' });
-});
-
-app.get('/api/health', (req, res) => {
-    res.json({
-        success: true,
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
-});
-
-// ── 404 Handler ───────────────────────────────────────────────────────────────
+// ── 404 & Error Handlers ──────────────────────────────────────────────────────
 app.use(notFound);
-
-// ── Global Error Handler (MUST BE LAST) ────────────────────────────────────────
 app.use(globalErrorHandler);
 
 // ── Start Server ──────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log('╔════════════════════════════════════════════════════════════╗');
     console.log('║         Gousamhitha API Server Started                    ║');
     console.log('╚════════════════════════════════════════════════════════════╝');
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🔒 Security: Helmet, XSS Protection, Rate Limiting enabled`);
-    console.log(`📝 Validation: Joi validation enabled`);
-    console.log(`✅ Error Handling: Global error handler with standardized responses`);
-    console.log('');
+    console.log(`🗄️  Supabase URL: ${process.env.SUPABASE_URL ? '✅ Set' : '❌ MISSING'}`);
+    console.log(`🔑 Supabase Key: ${process.env.SUPABASE_SERVICE_KEY ? '✅ Set' : '❌ MISSING'}`);
+    console.log(`🔐 JWT Secret:   ${process.env.JWT_SECRET ? '✅ Set' : '❌ MISSING'}`);
 });

@@ -1,12 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const url = process.env.SUPABASE_URL;
-const key = process.env.SUPABASE_SERVICE_KEY; // service role key — never exposed to frontend
+const key = process.env.SUPABASE_SERVICE_KEY;
 
 if (!url || !key) {
-    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in environment variables');
+    console.error('⚠️  WARNING: Missing SUPABASE_URL or SUPABASE_SERVICE_KEY — DB calls will fail');
 }
 
-const supabase = createClient(url, key);
+// Create client with fallback empty strings so server doesn't crash on startup
+const supabase = createClient(url || 'https://placeholder.supabase.co', key || 'placeholder');
 
 module.exports = supabase;
