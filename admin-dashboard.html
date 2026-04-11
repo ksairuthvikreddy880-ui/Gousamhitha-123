@@ -151,19 +151,22 @@
     <script src="js/admin-cache-invalidator.js"></script>
     
     <!-- Admin API Client -->
-    <script src="js/config.js"></script>
-    <script src="js/admin-api-client.js"></script>
+    <script src="js/config.js?v=20260411"></script>
+    <script src="js/admin-api-client.js?v=20260411"></script>
     
     <!-- Scripts -->
     <script src="js/loading-fix-enhanced.js"></script>
-    <script src="js/page-loader.js"></script>
-    <script src="admin-db.js"></script>
+    <script src="admin-db.js?v=20260411"></script>
     <script src="js/toast.js"></script>
     
     <script>
-        // Load dashboard as soon as DOM is ready — no Supabase dependency
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDashboard();
+        // DIRECT LOAD — no Supabase, no events, no cache
+        window.addEventListener('load', function() {
+            if (typeof loadDashboard === 'function') {
+                loadDashboard();
+            } else {
+                console.error('loadDashboard not found');
+            }
         });
     </script>
 </body>

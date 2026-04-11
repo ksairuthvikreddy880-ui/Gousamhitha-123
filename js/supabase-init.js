@@ -1,4 +1,4 @@
-// supabase-init.js — DISABLED
-// All data access goes through the backend API (/api/...)
-// Direct Supabase access from frontend has been removed for security.
-console.log('ℹ️ supabase-init.js: Direct Supabase access disabled. Using backend API.');
+// supabase-init.js — FULLY DISABLED v2
+// All data goes through backend API. No Supabase direct access.
+// supabaseReady event intentionally NOT fired.
+console.log('supabase-init.js: disabled, backend API only');
