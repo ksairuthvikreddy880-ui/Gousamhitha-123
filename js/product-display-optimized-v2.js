@@ -138,12 +138,16 @@
 
         } catch (err) {
             console.error('❌ [ProductOptimizer]', err.message);
-            var isWaking = err.message.includes('waking') || err.message.includes('fetch');
-            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#d32f2f;grid-column:1/-1;">' +
+            var isWaking = err.message.includes('waking') || err.message.includes('fetch') || err.message.includes('timed');
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;grid-column:1/-1;">' +
                 '<div style="font-size:3rem;margin-bottom:1rem;">' + (isWaking ? '⏳' : '⚠️') + '</div>' +
-                '<div style="font-size:1.2rem;margin-bottom:.5rem;">' + (isWaking ? 'Server is starting up, please wait...' : 'Could not load products.') + '</div>' +
-                '<div style="font-size:.85rem;color:#888;margin-bottom:1rem;">' + (isWaking ? 'Free server takes ~30 seconds to wake up. Click Retry.' : err.message) + '</div>' +
-                '<button onclick="window.ProductOptimizer.refresh()" style="padding:.7rem 1.5rem;background:#4a7c59;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Retry</button></div>';
+                '<div style="font-size:1.1rem;margin-bottom:.5rem;color:#555;">' + (isWaking ? 'Server is starting up...' : 'Could not load products.') + '</div>' +
+                '<div style="font-size:.85rem;color:#888;margin-bottom:1.5rem;">' + (isWaking ? 'Free server takes ~30 sec to wake. Auto-retrying...' : err.message) + '</div>' +
+                '<button onclick="window.ProductOptimizer.refresh()" style="padding:.7rem 1.5rem;background:#4a7c59;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Retry Now</button></div>';
+            // Auto-retry after 15 seconds if it was a timeout/fetch error
+            if (isWaking) {
+                setTimeout(function() { window.ProductOptimizer.refresh(); }, 15000);
+            }
         } finally {
             if (typeof window.hideLoader === 'function') window.hideLoader();
         }
