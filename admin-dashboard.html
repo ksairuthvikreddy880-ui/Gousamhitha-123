@@ -3,31 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4a7c59">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- v3 2026-04-11 -->
     <title>Dashboard - Gousamhitha Admin</title>
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/admin-responsive.css">
-    <link rel="stylesheet" href="css/admin-scrolling-fix.css">
-    <link rel="stylesheet" href="css/admin-mobile-alignment-fix.css">
-    <link rel="stylesheet" href="css/admin-mobile-fix.css">
-    <link rel="stylesheet" href="css/admin-emergency-fix.css">
-    <link rel="stylesheet" href="css/edit-modal-fix.css">
     <link rel="stylesheet" href="css/admin-mobile-layout-fix.css">
     <link rel="stylesheet" href="css/mobile-table-fullwidth-fix.css">
-    
-    <!-- Load config FIRST to set API_BASE_URL -->
-    <script src="js/config.js"></script>
-    
-    <script src="js/admin-scroll-emergency.js"></script>
-    <script src="js/admin-mobile.js"></script>
-    <script src="js/admin-mobile-table-fix.js"></script>
-    <script src="js/admin-mobile-layout-fix.js"></script>
-    <script src="js/single-click-hamburger-fix.js"></script>
 </head>
 <body class="admin-page">
     <div class="admin-layout">
@@ -45,40 +29,36 @@
                 <a href="#" class="nav-link" onclick="adminLogout()">Logout</a>
             </nav>
         </aside>
-        
+
         <main class="admin-content">
             <div class="content-header">
                 <h1>Dashboard</h1>
             </div>
-            
+
             <div class="dashboard-cards">
                 <div class="dashboard-card">
                     <h3>Total Products</h3>
-                    <p class="card-value" id="total-products">0</p>
+                    <p class="card-value" id="total-products">...</p>
                 </div>
-                
                 <div class="dashboard-card">
                     <h3>Total Vendors</h3>
-                    <p class="card-value" id="total-vendors">0</p>
+                    <p class="card-value" id="total-vendors">...</p>
                 </div>
-                
                 <div class="dashboard-card">
                     <h3>Orders Received</h3>
-                    <p class="card-value" id="total-orders">0</p>
+                    <p class="card-value" id="total-orders">...</p>
                 </div>
-                
                 <div class="dashboard-card">
                     <h3>Out of Stock</h3>
-                    <p class="card-value" id="out-of-stock">0</p>
+                    <p class="card-value" id="out-of-stock">...</p>
                 </div>
             </div>
 
             <div class="section-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
                     <h2 class="section-title">Vendor Management</h2>
-                    <button class="btn-primary" onclick="openAddVendorModal()" style="width: auto; padding: 0.8rem 1.5rem;">Add New Vendor</button>
+                    <button class="btn-primary" onclick="openAddVendorModal()" style="width:auto;padding:0.8rem 1.5rem;">Add New Vendor</button>
                 </div>
-                
                 <div class="table-container">
                     <table class="admin-table">
                         <thead>
@@ -92,19 +72,20 @@
                             </tr>
                         </thead>
                         <tbody id="vendors-list-body">
-                            
+                            <tr><td colspan="6" style="text-align:center;padding:1rem;">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            
+
             <div class="recent-section">
                 <h2>Recent Orders</h2>
-                <div id="recent-orders-list"></div>
+                <div id="recent-orders-list"><p>Loading...</p></div>
             </div>
         </main>
     </div>
 
+    <!-- Add Vendor Panel -->
     <div class="edit-panel" id="add-vendor-panel">
         <div class="edit-panel-header">
             <h2>Add New Vendor</h2>
@@ -115,29 +96,20 @@
                 <div class="form-group">
                     <label>Vendor Name *</label>
                     <input type="text" id="new-vendor-name" required placeholder="e.g., John Smith">
-                    <small>Supplier/Vendor contact name</small>
                 </div>
-                
                 <div class="form-group">
                     <label>Business Name *</label>
                     <input type="text" id="new-business-name" required placeholder="e.g., Organic Farm Co.">
-                    <small>Company or business name</small>
                 </div>
-                
                 <div class="form-group">
                     <label>Phone</label>
                     <input type="tel" id="new-vendor-phone" placeholder="10 digit number">
-                    <small>Contact phone number (optional)</small>
                 </div>
-                
                 <div class="form-group">
                     <label>Address</label>
                     <textarea id="new-vendor-address" rows="3" placeholder="Business address"></textarea>
-                    <small>Business address (optional)</small>
                 </div>
-                
                 <div class="form-message" id="add-vendor-message"></div>
-                
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Create Vendor</button>
                     <button type="button" class="btn-secondary" onclick="closeAddVendorModal()">Cancel</button>
@@ -145,29 +117,126 @@
             </form>
         </div>
     </div>
-    
-    <!-- Persistent Admin Cache - Keep data across page navigation -->
-    <script src="js/persistent-admin-cache.js"></script>
-    <script src="js/admin-cache-invalidator.js"></script>
-    
-    <!-- Admin API Client -->
-    <script src="js/config.js?v=20260411"></script>
-    <script src="js/admin-api-client.js?v=20260411"></script>
-    
-    <!-- Scripts -->
-    <script src="js/loading-fix-enhanced.js"></script>
-    <script src="admin-db.js?v=20260411"></script>
+
+    <script src="js/admin-mobile.js"></script>
+    <script src="js/admin-mobile-layout-fix.js"></script>
+    <script src="js/single-click-hamburger-fix.js"></script>
     <script src="js/toast.js"></script>
-    
+
     <script>
-        // DIRECT LOAD — no Supabase, no events, no cache
-        window.addEventListener('load', function() {
-            if (typeof loadDashboard === 'function') {
-                loadDashboard();
-            } else {
-                console.error('loadDashboard not found');
+        // ── Config ────────────────────────────────────────────────────────────
+        const API = 'https://gousamhitha-123.onrender.com/api';
+
+        function getToken() {
+            return localStorage.getItem('token') || localStorage.getItem('auth_token') || '';
+        }
+
+        function authHeaders() {
+            return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+        }
+
+        // ── Load Dashboard ────────────────────────────────────────────────────
+        async function loadDashboard() {
+            try {
+                const [pRes, vRes, oRes] = await Promise.all([
+                    fetch(API + '/products?limit=100'),
+                    fetch(API + '/vendors?limit=100', { headers: authHeaders() }),
+                    fetch(API + '/orders?limit=100',  { headers: authHeaders() })
+                ]);
+
+                const pData = await pRes.json();
+                const vData = await vRes.json();
+                const oData = await oRes.json();
+
+                const products = pData.data?.items || pData.data || [];
+                const vendors  = vData.data?.items || vData.data || [];
+                const orders   = oData.data?.items || oData.data || [];
+
+                console.log('Dashboard loaded:', products.length, 'products,', vendors.length, 'vendors,', orders.length, 'orders');
+
+                document.getElementById('total-products').textContent = products.length;
+                document.getElementById('total-vendors').textContent  = vendors.length;
+                document.getElementById('total-orders').textContent   = orders.length;
+                document.getElementById('out-of-stock').textContent   = products.filter(p => !p.stock || p.stock === 0).length;
+
+                renderVendors(vendors, products);
+                renderRecentOrders(orders);
+            } catch (err) {
+                console.error('Dashboard load error:', err);
+                document.getElementById('total-products').textContent = 'ERR';
             }
-        });
+        }
+
+        function renderVendors(vendors, products) {
+            const tbody = document.getElementById('vendors-list-body');
+            if (!vendors.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1rem;color:#666;">No vendors yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = vendors.map(v => {
+                const count = products.filter(p => p.vendor_id === v.id).length;
+                const date  = v.created_at ? new Date(v.created_at).toLocaleDateString() : 'N/A';
+                return `<tr>
+                    <td>${v.vendor_name || ''}</td>
+                    <td>${v.business_name || ''}</td>
+                    <td>${v.phone || 'N/A'}</td>
+                    <td><span class="status-badge in-stock">active</span></td>
+                    <td>${count}</td>
+                    <td>${date}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderRecentOrders(orders) {
+            const el = document.getElementById('recent-orders-list');
+            if (!orders.length) { el.innerHTML = '<p style="color:#666;padding:1rem;">No orders yet</p>'; return; }
+            el.innerHTML = orders.slice(0, 5).map(o => `
+                <div style="padding:.8rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;">
+                    <span><strong>#${(o.id||'').substring(0,8).toUpperCase()}</strong> — ${o.customer_name || o.customer_email || 'N/A'}</span>
+                    <span>₹${o.total_amount || o.total || 0} &nbsp; <em>${o.order_status || o.status || 'Pending'}</em></span>
+                </div>`).join('');
+        }
+
+        // ── Vendor Modal ──────────────────────────────────────────────────────
+        function openAddVendorModal()  { document.getElementById('add-vendor-panel').classList.add('active'); }
+        function closeAddVendorModal() {
+            document.getElementById('add-vendor-panel').classList.remove('active');
+            document.getElementById('add-vendor-form').reset();
+            document.getElementById('add-vendor-message').textContent = '';
+        }
+
+        async function handleAddVendor(e) {
+            e.preventDefault();
+            const msg = document.getElementById('add-vendor-message');
+            const body = {
+                vendor_name:   document.getElementById('new-vendor-name').value,
+                business_name: document.getElementById('new-business-name').value,
+                phone:         document.getElementById('new-vendor-phone').value || null,
+                address:       document.getElementById('new-vendor-address').value || null,
+                status: 'active'
+            };
+            try {
+                const res  = await fetch(API + '/vendors', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || data.error || 'Failed');
+                msg.textContent = 'Vendor created!';
+                msg.style.color = 'green';
+                setTimeout(() => { closeAddVendorModal(); loadDashboard(); }, 1200);
+            } catch (err) {
+                msg.textContent = 'Error: ' + err.message;
+                msg.style.color = 'red';
+            }
+        }
+
+        function adminLogout() {
+            if (confirm('Logout?')) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', loadDashboard);
     </script>
 </body>
 </html>
