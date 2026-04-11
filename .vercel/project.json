@@ -3,7 +3,8 @@
   "orgId": "team_xxx",
   "settings": {
     "framework": null,
-    "buildCommand": null,
-    "outputDirectory": null
+    "buildCommand": "",
+    "outputDirectory": ".",
+    "installCommand": ""
   }
 }
