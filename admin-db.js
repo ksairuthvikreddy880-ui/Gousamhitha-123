@@ -11,11 +11,12 @@ async function loadDashboard() {
     try {
         const token = localStorage.getItem('token') || localStorage.getItem('auth_token') || '';
         const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+        const base = window.API_BASE_URL || 'https://gousamhitha-123.onrender.com/api';
 
         const [productsRes, ordersRes, vendorsRes] = await Promise.all([
-            fetch(`${API_BASE_URL}/products`),
-            fetch(`${API_BASE_URL}/orders`, { headers }),
-            fetch(`${API_BASE_URL}/vendors`, { headers })
+            fetch(`${base}/products?limit=100`),
+            fetch(`${base}/orders`, { headers }),
+            fetch(`${base}/vendors`, { headers })
         ]);
         
         const productsData = await productsRes.json();
@@ -24,16 +25,11 @@ async function loadDashboard() {
         
         console.log('Dashboard API responses:', { productsData, ordersData, vendorsData });
         
-        // Extract data from API response format
         const products = productsData.data?.items || productsData.data || productsData.products || [];
         const orders = ordersData.data?.items || ordersData.data || ordersData.orders || [];
         const vendors = vendorsData.data?.items || vendorsData.data || vendorsData.vendors || [];
         
-        console.log('Extracted data:', { 
-            products: products.length, 
-            orders: orders.length, 
-            vendors: vendors.length 
-        });
+        console.log('Extracted data:', { products: products.length, orders: orders.length, vendors: vendors.length });
         
         const outOfStock = products.filter(p => p.stock === 0 || !p.in_stock).length;
         
@@ -46,7 +42,6 @@ async function loadDashboard() {
         loadRecentOrders(orders);
     } catch (error) {
         console.error('Load dashboard error:', error);
-        alert('Failed to load dashboard data');
     }
 }
 function loadVendorsList(vendors, products) {
@@ -283,7 +278,7 @@ async function displayCategoriesList() {
             categoryName.textContent = category.name;
             categoryName.style.cssText = 'flex: 1; color: #333;';
             const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = '×';
+            deleteBtn.innerHTML = 'ï¿½';
             deleteBtn.style.cssText = 'background: #d32f2f; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1;';
             deleteBtn.onclick = () => deleteCategory(category.id);
             deleteBtn.title = 'Delete category';
