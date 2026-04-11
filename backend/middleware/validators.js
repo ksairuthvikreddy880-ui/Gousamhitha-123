@@ -82,7 +82,7 @@ const schemas = {
                 'number.integer': 'Stock must be an integer',
                 'number.min': 'Stock cannot be negative'
             }),
-        image_url: Joi.string().uri().allow('', null).optional(),
+        image_url: Joi.string().allow('', null).optional(),
         unit: Joi.string().trim().max(50).allow('', null).optional(),
         unit_quantity: Joi.number().positive().allow(null).optional()
             .messages({
@@ -97,7 +97,7 @@ const schemas = {
         category: Joi.string().trim().min(2).max(100).optional(),
         price: Joi.number().positive().precision(2).optional(),
         stock: Joi.number().integer().min(0).optional(),
-        image_url: Joi.string().uri().allow('', null).optional(),
+        image_url: Joi.string().allow('', null).optional(),
         unit: Joi.string().trim().max(50).allow('', null).optional(),
         unit_quantity: Joi.number().positive().allow(null).optional()
             .messages({
