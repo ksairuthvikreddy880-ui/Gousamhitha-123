@@ -153,29 +153,17 @@
     <script src="js/config.js"></script>
     <script src="js/admin-api-client.js"></script>
     
-    <!-- Instant Admin Loader - Load real data within 1 second -->
-    <script src="js/instant-admin-loader.js"></script>
-    
     <!-- Scripts -->
     <script src="js/loading-fix-enhanced.js"></script>
     <script src="js/page-loader.js"></script>
-    <!-- ✅ SECURE: Removed unsafe admin-script.js - use admin-db.js only -->
     <script src="admin-db.js"></script>
     <script src="js/toast.js"></script>
     
     <script>
-        // Wait for Supabase to be ready
-        window.addEventListener('supabaseReady', async () => {
-            console.log('✅ Supabase ready, loading dashboard...');
-            // Admin fast loader will handle this automatically
+        // Load dashboard as soon as DOM is ready — no Supabase dependency
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
         });
-        
-        // Also try after a delay
-        setTimeout(async () => {
-            if (window.supabase) {
-                // Admin fast loader will handle this automatically
-            }
-        }, 1000);
     </script>
 </body>
 </html>
