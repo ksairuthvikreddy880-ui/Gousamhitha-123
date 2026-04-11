@@ -66,7 +66,7 @@
                 
 
                 if (!user) {
-                    console.log('No user logged in - cart count is 0');
+                    // Not logged in, cart count stays 0
                     // Clear stale localStorage cart data
                     localStorage.removeItem('cart');
                     return 0;

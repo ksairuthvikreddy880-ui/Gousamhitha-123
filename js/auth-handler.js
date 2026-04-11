@@ -408,7 +408,7 @@ function setupProfileButton() {
         
         console.log('✅ Click handler attached');
     } else {
-        console.log('❌ Profile button not found!');
+        console.log('Profile button not found on this page');
     }
     
     // Close dropdown when clicking outside
