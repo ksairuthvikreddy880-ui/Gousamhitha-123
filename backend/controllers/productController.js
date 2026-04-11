@@ -70,6 +70,8 @@ const getProductById = asyncHandler(async (req, res) => {
 const createProduct = asyncHandler(async (req, res) => {
     const { name, category, price, stock, image_url, unit, unit_quantity, display_unit } = req.body;
 
+    console.log('📦 CREATE PRODUCT - body:', JSON.stringify({ name, category, price, stock, unit, display_unit, image_url: image_url ? image_url.substring(0, 50) + '...' : null }));
+
     // Validate business logic
     if (price <= 0) {
         throw new AppError('Price must be greater than 0', 400);
@@ -83,22 +85,22 @@ const createProduct = asyncHandler(async (req, res) => {
         .insert({
             name,
             category,
-            price,
-            stock,
-            image_url,
-            unit,
-            unit_quantity,
-            display_unit,
-            in_stock: stock > 0
+            price: parseFloat(price),
+            stock: parseInt(stock),
+            image_url: image_url || null,
+            unit: unit || null,
+            unit_quantity: unit_quantity || null,
+            display_unit: display_unit || null
         })
         .select()
         .single();
 
     if (error) {
+        console.error('❌ Supabase insert error:', JSON.stringify(error));
         if (error.code === '23505') {
             throw new AppError('A product with this name already exists', 409);
         }
-        throw new AppError('Failed to create product', 500);
+        throw new AppError(`Failed to create product: ${error.message}`, 500);
     }
 
     return createdResponse(res, data, 'Product created successfully');
