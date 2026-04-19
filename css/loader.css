@@ -1,0 +1,44 @@
+/* Global Loader */
+#global-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+#global-loader.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#global-loader svg {
+    width: 60px;
+    height: 60px;
+    animation: loader-rotate 2s linear infinite;
+}
+
+#global-loader circle {
+    fill: none;
+    stroke: #4a7c59;
+    stroke-width: 4;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: loader-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes loader-rotate {
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes loader-dash {
+    0%   { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+    50%  { stroke-dasharray: 90, 200; stroke-dashoffset: -35px; }
+    100% { stroke-dasharray: 90, 200; stroke-dashoffset: -125px; }
+}
