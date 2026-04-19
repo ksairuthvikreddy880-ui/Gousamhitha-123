@@ -143,36 +143,53 @@
         // ── Load Dashboard ────────────────────────────────────────────────────
         async function loadDashboard() {
             try {
-                const [pRes, vRes, oRes, visRes] = await Promise.all([
-                    fetch(API + '/products?limit=100'),
+                // Use dedicated stats endpoint for fast accurate counts
+                const statsRes = await fetch(API + '/admin/stats');
+                const statsJson = await statsRes.json();
+
+                if (statsJson.success && statsJson.data) {
+                    const d = statsJson.data;
+                    document.getElementById('total-products').textContent = d.totalProducts;
+                    document.getElementById('total-vendors').textContent  = d.totalVendors;
+                    document.getElementById('total-orders').textContent   = d.totalOrders;
+                    document.getElementById('out-of-stock').textContent   = d.outOfStock;
+                    console.log('✅ Stats loaded:', d);
+                }
+
+                // Load visitor stats
+                fetch(API + '/visitors/stats')
+                    .then(r => r.json())
+                    .then(v => {
+                        const el = document.getElementById('visitors-7days');
+                        if (el) el.textContent = v.data?.last7days ?? '—';
+                    }).catch(() => {});
+
+                // Load vendors list and recent orders separately
+                const [vRes, oRes] = await Promise.all([
                     fetch(API + '/vendors?limit=100', { headers: authHeaders() }),
-                    fetch(API + '/orders?limit=100',  { headers: authHeaders() }),
-                    fetch(API + '/visitors/stats').catch(() => null)
+                    fetch(API + '/orders?limit=10',   { headers: authHeaders() })
                 ]);
 
-                const pData = await pRes.json();
                 const vData = await vRes.json();
                 const oData = await oRes.json();
 
+                const vendors = vData.data?.items || vData.data || [];
+                const orders  = oData.data?.items || oData.data || [];
+
+                // Fetch products for vendor product count
+                const pRes  = await fetch(API + '/products?limit=100');
+                const pData = await pRes.json();
                 const products = pData.data?.items || pData.data || [];
-                const vendors  = vData.data?.items || vData.data || [];
-                const orders   = oData.data?.items || oData.data || [];
-
-                document.getElementById('total-products').textContent = products.length;
-                document.getElementById('total-vendors').textContent  = vendors.length;
-                document.getElementById('total-orders').textContent   = orders.length;
-                document.getElementById('out-of-stock').textContent   = products.filter(p => !p.stock || p.stock === 0).length;
-
-                if (visRes) {
-                    const visData = await visRes.json();
-                    document.getElementById('visitors-7days').textContent = visData.data?.last7days ?? '—';
-                }
 
                 renderVendors(vendors, products);
                 renderRecentOrders(orders);
+
             } catch (err) {
                 console.error('Dashboard load error:', err);
-                document.getElementById('total-products').textContent = 'ERR';
+                ['total-products','total-vendors','total-orders','out-of-stock'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '0';
+                });
             }
         }
 

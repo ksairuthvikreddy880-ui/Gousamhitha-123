@@ -25,6 +25,7 @@ const vendorRoutes = require('./routes/vendors');
 const deliveryRoutes = require('./routes/delivery');
 const payoutRoutes = require('./routes/payouts');
 const visitorRoutes = require('./routes/visitors');
+const adminStatsRoutes = require('./routes/admin-stats');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -74,6 +75,7 @@ app.use('/api/vendors', vendorRoutes);
 app.use('/api/delivery', deliveryRoutes);
 app.use('/api/payouts', payoutRoutes);
 app.use('/api', visitorRoutes);
+app.use('/api/admin', adminStatsRoutes);
 
 // ── 404 & Error Handlers ──────────────────────────────────────────────────────
 app.use(notFound);
