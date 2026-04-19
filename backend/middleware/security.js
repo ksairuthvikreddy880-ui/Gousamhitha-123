@@ -1,4 +1,4 @@
-// Security Middleware
+]// Security Middleware
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
@@ -106,7 +106,9 @@ const corsOptions = {
         const isAllowed =
             allowedOrigins.includes(origin) ||
             origin.endsWith('.vercel.app') ||
-            origin.endsWith('.onrender.com');
+            origin.endsWith('.onrender.com') ||
+            origin.endsWith('.railway.app') ||
+            origin.endsWith('.up.railway.app');
 
         if (isAllowed) {
             callback(null, true);
