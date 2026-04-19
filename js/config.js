@@ -10,30 +10,33 @@
         : 'https://gousamhitha-123.onrender.com/api';
 
     console.log('⚙️ API Config loaded:', window.API_BASE_URL);
-
     window.getAPIBase = function() { return window.API_BASE_URL; };
 
-    // Wake up Render backend immediately (free tier cold start fix)
     if (!isLocal) {
+        // Wake up backend — max 3 attempts, stops once awake
+        var pingAttempts = 0;
         var woken = false;
         function ping() {
-            if (woken) return;
+            if (woken || pingAttempts >= 3) return;
+            pingAttempts++;
             fetch('https://gousamhitha-123.onrender.com/api/health')
                 .then(function(r) {
                     if (r.ok) {
                         woken = true;
-                        console.log('✅ Backend awake');
-                        if (window.ProductOptimizer && window.ProductOptimizer.refresh) {
-                            window.ProductOptimizer.refresh();
-                        }
+                        console.log('✅ Backend awake after', pingAttempts, 'attempt(s)');
+                    } else if (!woken && pingAttempts < 3) {
+                        setTimeout(ping, 12000);
                     }
                 })
-                .catch(function() { setTimeout(ping, 8000); });
+                .catch(function() {
+                    if (!woken && pingAttempts < 3) setTimeout(ping, 12000);
+                });
         }
         ping();
-        setTimeout(ping, 10000);
 
-        // Track visit — fire and forget, never blocks UI
+        // Track visit once per page load
         fetch('https://gousamhitha-123.onrender.com/api/track-visit', { method: 'POST' })
             .catch(function() {});
-    }})();
+    }
+
+})();

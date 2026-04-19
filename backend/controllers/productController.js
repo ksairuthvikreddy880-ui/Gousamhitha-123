@@ -1,10 +1,18 @@
 const supabase = require('../config/supabase');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
 const { successResponse, createdResponse, errorResponse, batchResponse } = require('../utils/response');
+const cache = require('../utils/cache');
 
 // GET /api/products
 const getProducts = asyncHandler(async (req, res) => {
     const { category, search, page = 1, limit = 20, sort = 'created_at' } = req.query;
+
+    // Cache key based on query params — skip cache for search queries
+    const cacheKey = `products:${category||''}:${page}:${limit}:${sort}`;
+    if (!search) {
+        const cached = cache.get(cacheKey);
+        if (cached) return res.json(cached);
+    }
 
     let query = supabase
         .from('products')
@@ -46,7 +54,14 @@ const getProducts = asyncHandler(async (req, res) => {
 
     console.log('Products fetched:', productsWithImages ? productsWithImages.length : 0);
 
-    return batchResponse(res, 200, productsWithImages, count || 0, 'Products fetched successfully');
+    const responseBody = {
+        success: true, statusCode: 200,
+        data: { items: productsWithImages, total: count || 0, count: productsWithImages.length },
+        message: 'Products fetched successfully',
+        timestamp: new Date().toISOString()
+    };
+    if (!search) cache.set(cacheKey, responseBody, 60);
+    return res.status(200).json(responseBody);
 });
 
 // GET /api/products/:id
@@ -103,6 +118,8 @@ const createProduct = asyncHandler(async (req, res) => {
         throw new AppError(`Failed to create product: ${error.message}`, 500);
     }
 
+    // Invalidate product cache
+    cache.clear();
     return createdResponse(res, data, 'Product created successfully');
 });
 
@@ -158,6 +175,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     console.log('✅ UPDATE SUCCESS:', JSON.stringify(data, null, 2));
 
+    cache.clear(); // Invalidate cache
     return successResponse(res, 200, data, 'Product updated successfully');
 });
 
