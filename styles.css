@@ -1820,3 +1820,11 @@ button:active {
     transform: scale(0.96);
     transition: transform 0.1s;
 }
+
+/* Hide cart count badge globally */
+.cart-count,
+#nav-cart-count,
+#bottom-nav-cart-count,
+.nav-badge {
+    display: none !important;
+}
