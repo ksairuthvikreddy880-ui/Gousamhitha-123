@@ -144,43 +144,53 @@
         // ── Load Dashboard ────────────────────────────────────────────────────
         async function loadDashboard() {
             try {
-                // Use dedicated stats endpoint for fast accurate counts
-                const statsRes = await fetch(API + '/admin/stats');
-                const statsJson = await statsRes.json();
+                // Try stats endpoint first, fall back to direct fetches
+                let totalProducts = 0, totalVendors = 0, totalOrders = 0, outOfStock = 0;
 
-                if (statsJson.success && statsJson.data) {
-                    const d = statsJson.data;
-                    document.getElementById('total-products').textContent = d.totalProducts;
-                    document.getElementById('total-vendors').textContent  = d.totalVendors;
-                    document.getElementById('total-orders').textContent   = d.totalOrders;
-                    document.getElementById('out-of-stock').textContent   = d.outOfStock;
-                    console.log('✅ Stats loaded:', d);
+                try {
+                    const statsRes = await fetch(API + '/admin/stats');
+                    const statsJson = await statsRes.json();
+                    if (statsJson.success && statsJson.data) {
+                        totalProducts = statsJson.data.totalProducts;
+                        totalVendors  = statsJson.data.totalVendors;
+                        totalOrders   = statsJson.data.totalOrders;
+                        outOfStock    = statsJson.data.outOfStock;
+                        console.log('✅ Stats from /admin/stats:', statsJson.data);
+                    }
+                } catch (e) {
+                    console.warn('Stats endpoint failed, using direct fetch fallback');
                 }
 
-                // Load visitor stats
+                // Always fetch full data for the tables
+                const [pRes, vRes, oRes] = await Promise.all([
+                    fetch(API + '/products?limit=100'),
+                    fetch(API + '/vendors?limit=100', { headers: authHeaders() }),
+                    fetch(API + '/orders?limit=100',  { headers: authHeaders() })
+                ]);
+
+                const pData = await pRes.json();
+                const vData = await vRes.json();
+                const oData = await oRes.json();
+
+                const products = pData.data?.items || pData.data || [];
+                const vendors  = vData.data?.items || vData.data || [];
+                const orders   = oData.data?.items || oData.data || [];
+
+                console.log('Direct fetch:', products.length, 'products,', vendors.length, 'vendors,', orders.length, 'orders');
+
+                // Use direct counts as source of truth (always accurate)
+                document.getElementById('total-products').textContent = products.length || totalProducts;
+                document.getElementById('total-vendors').textContent  = vendors.length  || totalVendors;
+                document.getElementById('total-orders').textContent   = orders.length   || totalOrders;
+                document.getElementById('out-of-stock').textContent   = products.filter(p => !p.stock || p.stock === 0).length || outOfStock;
+
+                // Visitor stats
                 fetch(API + '/visitors/stats')
                     .then(r => r.json())
                     .then(v => {
                         const el = document.getElementById('visitors-7days');
                         if (el) el.textContent = v.data?.last7days ?? '—';
                     }).catch(() => {});
-
-                // Load vendors list and recent orders separately
-                const [vRes, oRes] = await Promise.all([
-                    fetch(API + '/vendors?limit=100', { headers: authHeaders() }),
-                    fetch(API + '/orders?limit=10',   { headers: authHeaders() })
-                ]);
-
-                const vData = await vRes.json();
-                const oData = await oRes.json();
-
-                const vendors = vData.data?.items || vData.data || [];
-                const orders  = oData.data?.items || oData.data || [];
-
-                // Fetch products for vendor product count
-                const pRes  = await fetch(API + '/products?limit=100');
-                const pData = await pRes.json();
-                const products = pData.data?.items || pData.data || [];
 
                 renderVendors(vendors, products);
                 renderRecentOrders(orders);
