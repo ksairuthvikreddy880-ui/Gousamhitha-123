@@ -49,10 +49,11 @@ app.use('/api/', apiLimiter);
 
 // ── Root & Health Routes ──────────────────────────────────────────────────────
 app.get('/', (req, res) => {
-    res.status(200).json({ success: true, message: 'Gousamhitha API is running 🚀' });
+    res.status(200).json({ success: true, message: 'Gousamhitha API is running 🚀', timestamp: Date.now() });
 });
 
 app.get('/api/health', (req, res) => {
+    console.log('Health check ping at', new Date().toISOString());
     res.status(200).json({
         success: true,
         status: 'ok',
@@ -86,4 +87,21 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`🗄️  Supabase URL: ${process.env.SUPABASE_URL ? '✅ Set' : '❌ MISSING'}`);
     console.log(`🔑 Supabase Key: ${process.env.SUPABASE_SERVICE_KEY ? '✅ Set' : '❌ MISSING'}`);
     console.log(`🔐 JWT Secret:   ${process.env.JWT_SECRET ? '✅ Set' : '❌ MISSING'}`);
+
+    // ── Keep-alive self-ping (Render free tier cold start prevention) ─────────
+    if (process.env.NODE_ENV === 'production') {
+        const SELF_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+        setInterval(() => {
+            const http = require('http');
+            const https = require('https');
+            const url = SELF_URL + '/api/health';
+            const client = url.startsWith('https') ? https : http;
+            client.get(url, (res) => {
+                console.log(`🏓 Keep-alive ping → ${res.statusCode}`);
+            }).on('error', (e) => {
+                console.warn('⚠️ Keep-alive ping failed:', e.message);
+            });
+        }, 14 * 60 * 1000); // every 14 minutes
+        console.log(`🏓 Keep-alive ping enabled → ${SELF_URL}/api/health`);
+    }
 });
