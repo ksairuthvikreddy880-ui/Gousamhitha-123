@@ -1,4 +1,4 @@
-]// Security Middleware
+// Security Middleware
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
