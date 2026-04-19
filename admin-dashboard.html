@@ -53,6 +53,10 @@
                     <h3>Out of Stock</h3>
                     <p class="card-value" id="out-of-stock">...</p>
                 </div>
+                <div class="dashboard-card">
+                    <h3>Visitors (7 days)</h3>
+                    <p class="card-value" id="visitors-7days">...</p>
+                </div>
             </div>
 
             <div class="section-container">
@@ -139,10 +143,11 @@
         // ── Load Dashboard ────────────────────────────────────────────────────
         async function loadDashboard() {
             try {
-                const [pRes, vRes, oRes] = await Promise.all([
+                const [pRes, vRes, oRes, visRes] = await Promise.all([
                     fetch(API + '/products?limit=100'),
                     fetch(API + '/vendors?limit=100', { headers: authHeaders() }),
-                    fetch(API + '/orders?limit=100',  { headers: authHeaders() })
+                    fetch(API + '/orders?limit=100',  { headers: authHeaders() }),
+                    fetch(API + '/visitors/stats').catch(() => null)
                 ]);
 
                 const pData = await pRes.json();
@@ -153,12 +158,15 @@
                 const vendors  = vData.data?.items || vData.data || [];
                 const orders   = oData.data?.items || oData.data || [];
 
-                console.log('Dashboard loaded:', products.length, 'products,', vendors.length, 'vendors,', orders.length, 'orders');
-
                 document.getElementById('total-products').textContent = products.length;
                 document.getElementById('total-vendors').textContent  = vendors.length;
                 document.getElementById('total-orders').textContent   = orders.length;
                 document.getElementById('out-of-stock').textContent   = products.filter(p => !p.stock || p.stock === 0).length;
+
+                if (visRes) {
+                    const visData = await visRes.json();
+                    document.getElementById('visitors-7days').textContent = visData.data?.last7days ?? '—';
+                }
 
                 renderVendors(vendors, products);
                 renderRecentOrders(orders);

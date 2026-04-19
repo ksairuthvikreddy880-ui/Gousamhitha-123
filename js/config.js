@@ -14,7 +14,6 @@
     window.getAPIBase = function() { return window.API_BASE_URL; };
 
     // Wake up Render backend immediately (free tier cold start fix)
-    // Keep pinging every 10s until it responds
     if (!isLocal) {
         var woken = false;
         function ping() {
@@ -24,21 +23,17 @@
                     if (r.ok) {
                         woken = true;
                         console.log('✅ Backend awake');
-                        // Trigger product reload if shop page is waiting
                         if (window.ProductOptimizer && window.ProductOptimizer.refresh) {
                             window.ProductOptimizer.refresh();
                         }
                     }
                 })
-                .catch(function() {
-                    console.log('⏳ Backend waking up, retrying...');
-                    setTimeout(ping, 8000);
-                });
+                .catch(function() { setTimeout(ping, 8000); });
         }
-        // Start pinging immediately
         ping();
-        // Also ping after 10s in case first ping was too early
         setTimeout(ping, 10000);
-    }
 
-})();
+        // Track visit — fire and forget, never blocks UI
+        fetch('https://gousamhitha-123.onrender.com/api/track-visit', { method: 'POST' })
+            .catch(function() {});
+    }})();

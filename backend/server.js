@@ -24,6 +24,7 @@ const authRoutes = require('./routes/auth');
 const vendorRoutes = require('./routes/vendors');
 const deliveryRoutes = require('./routes/delivery');
 const payoutRoutes = require('./routes/payouts');
+const visitorRoutes = require('./routes/visitors');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -72,6 +73,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/vendors', vendorRoutes);
 app.use('/api/delivery', deliveryRoutes);
 app.use('/api/payouts', payoutRoutes);
+app.use('/api', visitorRoutes);
 
 // ── 404 & Error Handlers ──────────────────────────────────────────────────────
 app.use(notFound);
